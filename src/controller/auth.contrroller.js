@@ -1,5 +1,7 @@
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt"
+import { createAccessToken, createRefreshToken } from "../utils/auth.utils.js";
+
 export async function register(req, res){
     try {
         const {name, email, password} = req.body;
@@ -11,7 +13,7 @@ export async function register(req, res){
                 message : "User already exist with this email address",
                 errors : [
                     {
-                        field : "email",
+                        path : "email",
                         message : "User already exist with this email address"
                     }
                 ]
@@ -25,13 +27,31 @@ export async function register(req, res){
             passwordHash: await bcrypt.hash(password, 10)
         })
 
+        const accessToken = await createAccessToken({
+            userId : user._id,
+            role : user.role
+        })
+        const refreshToken = await createAccessToken({
+            userId : user._id,
+            role : user.role
+        })
+
+        res.cookie("refreshToken", refreshToken), {
+            httpOnly : true
+        }
+        await userModel.findByIdAndUpdate(user._id, {
+            refreshToken : refreshToken
+        })
         return res.status(201).json({
             message: "User registered successfully",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
+            data : {
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role
+                },
+            accessToken
             }
         });
         
@@ -41,3 +61,59 @@ export async function register(req, res){
         });
     }
 }
+
+export async function login(req, res){
+    const {email, password}  = req.body;
+
+    const user = await userModel.findOne({email})
+
+    if(!user){
+        return res.status(400).json({
+            message : "Invalid Email or Password"
+        })
+    }
+    
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
+
+    if(!isPasswordValid){
+        return res.status(400).json({
+            message : "Invalid Email or Password"
+        })
+    }
+
+    const accessToken =  createAccessToken({
+            userId: user._id,
+            role : user.role
+        }
+    )
+    const refreshToken =  createRefreshToken({
+            userId: user._id,
+            role : user.role
+        }
+    )
+
+    await userModel.findOneAndUpdate({
+        email
+    }, {
+        refreshToken
+    })
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly : true
+    })
+
+
+    res.status(200).json({
+        message : "User LoggedIn Successfully",
+        data : {
+            user : {
+                userId : user._id,
+                email : user.email,
+                name : user.name
+            },
+            accessToken
+        }
+    })
+}
+

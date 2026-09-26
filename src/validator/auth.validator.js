@@ -32,4 +32,26 @@ import {body, validationResult} from 'express-validator'
 
 ]
 
+export const loginValidator = [
+   body('email')
+       .exists().withMessage("Email is required").bail()
+       .trim()
+       .isEmail().withMessage("Enter the valid email address"),
+
+   body('password')
+       .exists().withMessage("Password is required").bail()
+       .isString().withMessage("Password must be a String")
+       .trim()
+       .isLength({min : 6}).withMessage("password must be a minimum 6 character longest"),
+
+       (req, res, next) => {
+         if(!errors.isEmpty()){
+            return res.status(400).json({
+               message : "Invalid data",
+               errors: errors.array()
+            })
+         }
+         next()
+       }
+]
 
