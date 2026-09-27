@@ -45,6 +45,7 @@ export const loginValidator = [
        .isLength({min : 6}).withMessage("password must be a minimum 6 character longest"),
 
        (req, res, next) => {
+         const errors = validationResult(req)
          if(!errors.isEmpty()){
             return res.status(400).json({
                message : "Invalid data",
