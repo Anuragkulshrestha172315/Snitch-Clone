@@ -30,14 +30,14 @@ export async function register(req, res) {
       passwordHash: await bcrypt.hash(password, 10),
     });
 
-    const accessToken = await createAccessToken({
-      userId: user._id,
-      role: user.role,
-    });
-    const refreshToken = await createAccessToken({
-      userId: user._id,
-      role: user.role,
-    });
+    const accessToken = createAccessToken(
+  { userId: user._id },
+  user.role
+);
+  const refreshToken = createRefreshToken(
+  { userId: user._id },
+  user.role
+);
 
     (res.cookie("refreshToken", refreshToken),
       {
@@ -84,14 +84,14 @@ export async function login(req, res) {
     });
   }
 
-  const accessToken = createAccessToken({
-    userId: user._id,
-    role: user.role,
-  });
-  const refreshToken = createRefreshToken({
-    userId: user._id,
-    role: user.role,
-  });
+  const accessToken = createAccessToken(
+  { userId: user._id },
+  user.role
+);
+ const refreshToken = await createAccessToken({ 
+  userId: user._id, 
+  role: user.role, 
+});
 
   await userModel.findOneAndUpdate(
     {
@@ -189,7 +189,8 @@ export async function getMe(req,res){
             user :{
                 email : user.email,
                 name : user.name,
-                id : user._id
+                id : user._id,
+                role : user.role
             }
         }
     })
