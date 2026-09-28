@@ -4,11 +4,6 @@ import { uploadFile } from "../services/storage.services.js";
 
 export async function createProduct(req, res, next){
 
-
-
-    console.log(req.body);
-    console.log(req.files);
-
     const fileUrls = []
 
     for(let i = 0; i < req.files.length; i++){
@@ -47,4 +42,14 @@ export async function createProduct(req, res, next){
         message : "Dammy Data"
     })
     
+}
+export async function getAllProduct(req,res) {
+    const allproduct = await productModel.find();
+
+    res.status(201).json({
+        message : "All product featch successfully",
+        data : {
+            allproduct
+        }
+    })
 }
