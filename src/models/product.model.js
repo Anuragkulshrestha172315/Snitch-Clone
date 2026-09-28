@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
             default : "INR"
         }
     },
-    sizes :{ 
+    sizes :[{
         size :{
             type : String,
             enum : ["XS", "S", "M", "L", "XL", "XXL"],
@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema({
             min : 0,
             default : 0,
         }
-    },
+}],
 
     seller : { // y product kon sa seller create kr rha h uska id
         type : mongoose.Types.ObjectId,
