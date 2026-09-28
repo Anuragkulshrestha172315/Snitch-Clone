@@ -56,6 +56,16 @@ export async function getAllProduct(req,res) {
         }
     })
 }
+export async function listAllProductToSeller(req,res) {
+    const allproduct = await productModel.find();
+
+    res.status(201).json({
+        message : "All product featch successfully",
+        data : {
+            allproduct
+        }
+    })
+}
 
 export async function unlistProduct(req,res) {
     const {id} = req.body

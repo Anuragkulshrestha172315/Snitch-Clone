@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate, authenticateSeller } from "../Middleware/auth.middleware.js";
-import { createProduct, getAllProduct, listProduct, unlistProduct } from "../controller/product.controller.js";
+import { createProduct, getAllProduct, listAllProductToSeller, listProduct, unlistProduct } from "../controller/product.controller.js";
 import multer from "multer";
 import { createProductValidator, listProductValidator, unlistProductValidator } from "../validator/product.validator.js";
 
@@ -28,6 +28,7 @@ router.post('/', authenticate,authenticateSeller , upload.array("image"), (req, 
 }, createProductValidator, createProduct)
 
 router.get('/', authenticate, getAllProduct)
+router.get('/seller', authenticate, authenticateSeller,listAllProductToSeller)
 
 
 router.patch("/unlist/:id", authenticate, authenticateSeller, unlistProductValidator,unlistProduct)
