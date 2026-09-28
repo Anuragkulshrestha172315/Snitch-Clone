@@ -24,3 +24,14 @@ export async function authenticate(req, res, next){
     }
 
 }  
+
+
+export async function authenticateSeller(req, res, next){
+    if(req.user.role !==  "seller"){
+        return res.status(403).json({
+            message : "User is not authorize to create a products"
+            
+        })
+    }
+    next()
+}

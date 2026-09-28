@@ -43,8 +43,11 @@ export async function createProduct(req, res, next){
     })
     
 }
+
 export async function getAllProduct(req,res) {
-    const allproduct = await productModel.find();
+    const allproduct = await productModel.find({
+        published : true
+    });
 
     res.status(201).json({
         message : "All product featch successfully",
@@ -53,3 +56,44 @@ export async function getAllProduct(req,res) {
         }
     })
 }
+
+export async function unlistProduct(req,res) {
+    const {id} = req.body
+
+    const product = await productModel.findById(id);
+
+    if(!product){
+        return res.status(404).json({
+            message : "Product not found by Id"
+        })
+    }
+    
+    await productModel.findByIdAndUpadate(id, {
+        published : false
+    })
+
+    return res.status(200).json({
+            message : "Product unpublished successfully"
+    })
+} 
+
+export async function listProduct(req,res) {
+    const {id} = req.body
+
+    const product = await productModel.findById(id);
+
+    if(!product){
+        return res.status(404).json({
+            message : "Product not found by Id"
+        })
+    }
+    
+    await productModel.findByIdAndUpadate(id, {
+        published : true
+    })
+
+    return res.status(200).json({
+            message : "Product published successfully"
+    })
+} 
+

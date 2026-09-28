@@ -1,4 +1,4 @@
-import { body } from "express-validator"
+import { body, param,validationResult } from "express-validator"
 
 export const createProductValidator = [
     body('title')
@@ -23,4 +23,39 @@ export const createProductValidator = [
        .isString().withMessage("Currency must be a string value")
        .isIn(["INR", "USD"]).withMessage("Currency either be INR or USD")
 
+]
+
+
+export const unlistProductValidator = [
+   param("id")
+   .exists().withMessage("Product id is required in req params").bail()
+   .isMongoId().withMessage("product is must be a valid mongo object id"),
+
+   (req,res,next) => {
+      const errors = validationResult(req)
+      if(!errors.isEmpty()) {
+         return res.status(400).json({
+            message : "Invalid Data",
+            errors : errors.array()
+         })
+      }
+      next()
+   }
+]
+
+export const listProductValidator = [
+   param("id")
+   .exists().withMessage("Product id is required in req params").bail()
+   .isMongoId().withMessage("product is must be a valid mongo object id"),
+
+   (req,res,next) => {
+      const errors = validationResult(req)
+      if(!errors.isEmpty()) {
+         return res.status(400).json({
+            message : "Invalid Data",
+            errors : errors.array()
+         })
+      }
+      next()
+   }
 ]
