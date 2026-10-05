@@ -6,7 +6,7 @@ import { createProductValidator, listProductValidator, unlistProductValidator } 
 
 const upload = multer({storage: multer.memoryStorage(),
     limits : {
-        files : 6,
+        files : 5,
         fileSize : 1 * 1024 * 1024 //1MB (Single photo 1mb se choti honi chiye)
     }
       
