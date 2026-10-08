@@ -50,7 +50,7 @@ export async function getAllProduct(req,res) {
     });
 
     res.status(201).json({
-        message : "All product featch successfully",
+        message : "All Product featch successfully",
         data : {
             allproduct
         }
