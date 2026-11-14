@@ -60,7 +60,7 @@ export async function listAllProductToSeller(req,res) {
     const allproduct = await productModel.find();
 
     res.status(201).json({
-        message : "All produvt feath successfully",
+        message : "All produvt feath succehssfully",
         data : {
             allproduct
         }
